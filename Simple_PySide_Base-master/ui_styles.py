@@ -47,5 +47,10 @@ class Style():
         background-color: rgb(85, 170, 255);
         border-left: 28px solid rgb(85, 170, 255);
     }
+    
+    QWebEngineView{
+        background-color: rgb(33, 37, 43);
+    }
     """
+
     )

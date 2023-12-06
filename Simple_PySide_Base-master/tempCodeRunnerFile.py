@@ -1,2 +1,1 @@
-
-        self.browser.setUrl(QUrl("http://google.com"))
+go_btn

@@ -13,8 +13,8 @@ from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWidgets import *
 
-
 class Ui_MainWindow(object):
+    
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 720)
@@ -417,6 +417,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "")
+        
         self.frame_main.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.frame_main.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_main.setObjectName("frame_main")
@@ -618,36 +619,48 @@ class Ui_MainWindow(object):
         self.frame_top_info.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_top_info.setObjectName("frame_top_info")
 
-
-
-        
-
         self.horizontalLayout_8 = QtWidgets.QHBoxLayout(self.frame_top_info)
         self.horizontalLayout_8.setContentsMargins(10, 0, 10, 0)
         self.horizontalLayout_8.setSpacing(0)
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
-        self.label_top_info_1 = QtWidgets.QLabel(self.frame_top_info)
-        self.label_top_info_1.setMaximumSize(QtCore.QSize(16777215, 15))
-        font = QtGui.QFont()
-        font.setFamily("Segoe UI")
-        self.label_top_info_1.setFont(font)
-        self.label_top_info_1.setStyleSheet("color: rgb(98, 103, 111); ")
-        self.label_top_info_1.setObjectName("label_top_info_1")
-        self.horizontalLayout_8.addWidget(self.label_top_info_1)
-        self.label_top_info_2 = QtWidgets.QLabel(self.frame_top_info)
-        self.label_top_info_2.setMinimumSize(QtCore.QSize(0, 0))
-        self.label_top_info_2.setMaximumSize(QtCore.QSize(250, 20))
+
+        self.bookmark = QtWidgets.QPushButton("BookMark")
+        self.bookmark.setMinimumHeight(35)
+
+        self.go_btn = QtWidgets.QPushButton("Go")
+        self.go_btn.setMinimumHeight(35)
+
+        self.back_btn = QtWidgets.QPushButton("<")
+        self.back_btn.setMinimumHeight(35)
+
+        self.forward_btn = QtWidgets.QPushButton(">")
+        self.forward_btn.setMinimumHeight(35)
+
         
 
+        self.label_top_info_1 = QtWidgets.QTextEdit(self.frame_top_info)
+        self.label_top_info_1.setMaximumSize(QtCore.QSize(16777215, 35))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label_top_info_1.setAlignment(QtCore.Qt.AlignCenter)
+
+        font.setFamily("Segoe UI")
+        self.label_top_info_1.setFont(font)
+        self.label_top_info_1.setStyleSheet("color: rgb(255, 255, 255); ")
+        self.label_top_info_1.setObjectName("label_top_info_1")
+        self.horizontalLayout_8.addWidget(self.label_top_info_1)
+        
+        self.horizontalLayout_8.addWidget(self.bookmark)
+        self.horizontalLayout_8.addWidget(self.go_btn)
+        self.horizontalLayout_8.addWidget(self.back_btn)
+        self.horizontalLayout_8.addWidget(self.forward_btn)
+
+        
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setBold(True)
         font.setWeight(75)
-        self.label_top_info_2.setFont(font)
-        self.label_top_info_2.setStyleSheet("color: rgb(98, 103, 111);")
-        self.label_top_info_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.label_top_info_2.setObjectName("label_top_info_2")
-        self.horizontalLayout_8.addWidget(self.label_top_info_2)
+       
         self.verticalLayout_2.addWidget(self.frame_top_info)
         self.horizontalLayout_3.addWidget(self.frame_top_right)
         self.verticalLayout.addWidget(self.frame_top)
@@ -751,6 +764,11 @@ class Ui_MainWindow(object):
         self.browser = QWebEngineView()
         self.verticalLayout_7.addWidget(self.browser)
         self.browser.setUrl(QUrl("http://google.com"))
+        self.browser.urlChanged.connect(self.update_window_title)
+        self.go_btn.clicked.connect(lambda: self.navigate(self.label_top_info_1.toPlainText()))
+        self.back_btn.clicked.connect(self.browser.back)
+        self.forward_btn.clicked.connect(self.browser.forward)
+        self.bookmark.clicked.connect(self.bookmark_add)
 
         self.verticalLayout_9.addLayout(self.verticalLayout_7)
         self.verticalLayout_4.addWidget(self.frame_content)
@@ -812,6 +830,30 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.btn_minimize, self.btn_maximize_restore)
         MainWindow.setTabOrder(self.btn_maximize_restore, self.btn_close)
         MainWindow.setTabOrder(self.btn_close, self.btn_toggle_menu)
+    def handle_enter_key(self):
+        # Get the text from label_top_info_1
+        url = self.label_top_info_1.toPlainText()
+
+        # Your logic for navigating to the URL
+        self.navigate(url)
+
+    def navigate(self, url):
+        if not url.startswith("http"):
+            url = "http://" + url
+            self.label_top_info_1.setText(url)
+            
+        self.browser.setUrl(QUrl(url))
+    def update_window_title(self, url):
+        current_url = self.browser.url().toString()
+
+        if not current_url.startswith("http"):
+            current_url = "http://" + current_url
+            self.label_top_info_1.setText(current_url)
+        self.label_top_info_1.setText(current_url)
+    def bookmark_add(self):
+        current_url = self.browser.url().toString()
+        print(current_url)
+        self.newIcon = QtWidgets.QLabel(self.frame_left_menu)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -820,20 +862,23 @@ class Ui_MainWindow(object):
         self.btn_minimize.setToolTip(_translate("MainWindow", "Minimize"))
         self.btn_maximize_restore.setToolTip(_translate("MainWindow", "Maximize"))
         self.btn_close.setToolTip(_translate("MainWindow", "Close"))
-        self.label_top_info_1.setText(_translate("MainWindow", "C:\\Program Files\\Blender Foundation\\Blender 2.82"))
-        self.label_top_info_2.setText(_translate("MainWindow", "| HOME"))
+        
+        self.label_top_info_1.setText(_translate("MainWindow", "http://google.com"))
+        
         self.label_user_icon.setText(_translate("MainWindow", "WM"))
         self.label_credits.setText(_translate("MainWindow", "Registered by: Wanderson M. Pimenta"))
         self.label_version.setText(_translate("MainWindow", "v1.0.0"))
+
+        
 import files_rc
 
 
 if __name__ == "__main__":
     import sys
+    
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
-    
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
