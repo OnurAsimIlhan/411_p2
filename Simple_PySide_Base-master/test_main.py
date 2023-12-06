@@ -841,9 +841,18 @@ class Ui_MainWindow(object):
                 connection, cursor = create_connection(FULL_PATH)
                 select_query = "SELECT * FROM Bookmarks"
                 cursor.execute(select_query)
+                connection.commit()
                 records = cursor.fetchall()
+                
+                dt = datetime.now()
+                current_day = dt.day
+                
+                records = sorted(records, key=lambda x: x[current_day + 2], reverse=True)
+                
                 for row in records:
-                        self.verticalLayout_5.insertWidget(0, QPushButton(row[0]))
+                        button = QPushButton(row[0])
+                        button.clicked.connect(lambda: self.handle_bookmark(button))
+                        self.verticalLayout_5.insertWidget(0, button)
                 connection.close()
                 
         def handle_enter_key(self):
@@ -875,16 +884,31 @@ class Ui_MainWindow(object):
                 dt = datetime.now()
                 current_day = dt.strftime('%A')
                 connection, cursor = create_connection(FULL_PATH)
-                insert_query = f"INSERT INTO Bookmarks (name, url, {current_day}) VALUES ('{current_name}', '{current_url}', 1);" # SQL query
+                insert_query = f"INSERT INTO Bookmarks (name, url, {current_day}) VALUES ('{current_name}', '{current_url}', 1);"
                 cursor.execute(insert_query)
                 connection.commit()
                 connection.close()
                 
-                self.verticalLayout_5.update()
-                
-                #self.verticalLayout_5.insertWidget(0, QPushButton(current_name)) # add a button to the top of the layout
+                button = QPushButton(current_name)
+                button.clicked.connect(lambda: self.handle_bookmark(button))
+                self.verticalLayout_5.insertWidget(0, button) # add a button to the top of the layout
                 self.newIcon = QtWidgets.QLabel(self.frame_left_menu)
                 
+        def handle_bookmark(self, button:QPushButton):
+                bookmark_name = button.text()
+                print(bookmark_name)
+                connection, cursor = create_connection(FULL_PATH)
+                select_query = f"SELECT * FROM Bookmarks WHERE name='{bookmark_name}'"
+                cursor.execute(select_query)
+                connection.commit()
+                records = cursor.fetchall()
+                connection.close()
+                
+                print(records)
+                
+                url = records[0][1]
+                print(url)
+                self.navigate(url)
 
 
         def retranslateUi(self, MainWindow):
