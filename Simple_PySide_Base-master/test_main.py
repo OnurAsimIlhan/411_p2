@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import *
 from db_connection import *
 from datetime import datetime
 
-FULL_PATH = "C:\\Users\\Efe ERKAN\\Desktop\\cs411\\project2\\411_p2\\Simple_PySide_Base-master\\storage\\bookmarking.db"
+FULL_PATH = "C:\\Users\\onura\\Documents\\491\\411_p2\\Simple_PySide_Base-master\\storage\\bookmarking.db"
 
 # connection, cursor = create_connection(FULL_PATH)
 
@@ -847,11 +847,11 @@ class Ui_MainWindow(object):
                 dt = datetime.now()
                 current_day = dt.day
                 
-                records = sorted(records, key=lambda x: x[current_day + 2], reverse=True)
+                records = sorted(records, key=lambda x: x[current_day+1], reverse=True)
                 
                 for row in records:
-                        button = QPushButton(row[0])
-                        button.clicked.connect(lambda: self.handle_bookmark(button))
+                        button = QtWidgets.QPushButton(row[0])
+                        button.clicked.connect(lambda _, b=button: self.handle_bookmark(b))
                         self.verticalLayout_5.insertWidget(0, button)
                 connection.close()
                 
@@ -883,18 +883,20 @@ class Ui_MainWindow(object):
                 
                 dt = datetime.now()
                 current_day = dt.strftime('%A')
+
                 connection, cursor = create_connection(FULL_PATH)
                 insert_query = f"INSERT INTO Bookmarks (name, url, {current_day}) VALUES ('{current_name}', '{current_url}', 1);"
+                
                 cursor.execute(insert_query)
                 connection.commit()
                 connection.close()
                 
-                button = QPushButton(current_name)
+                button = QtWidgets.QPushButton(current_name)
                 button.clicked.connect(lambda: self.handle_bookmark(button))
                 self.verticalLayout_5.insertWidget(0, button) # add a button to the top of the layout
                 self.newIcon = QtWidgets.QLabel(self.frame_left_menu)
                 
-        def handle_bookmark(self, button:QPushButton):
+        def handle_bookmark(self, button:QtWidgets.QPushButton):
                 bookmark_name = button.text()
                 print(bookmark_name)
                 connection, cursor = create_connection(FULL_PATH)
