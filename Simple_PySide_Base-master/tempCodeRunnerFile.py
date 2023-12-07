@@ -1,1 +1,1 @@
-go_btn
+label_top_info_1

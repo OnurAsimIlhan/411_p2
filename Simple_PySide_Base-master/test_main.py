@@ -12,6 +12,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtCore import QUrl
 from PyQt5.QtCore import QPropertyAnimation
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QPoint, Qt
 
 from PyQt5.QtWidgets import *
 
@@ -626,7 +628,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_8.setSpacing(0)
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
 
-        self.bookmark = QtWidgets.QPushButton("BookMark")
+        self.bookmark = QtWidgets.QPushButton()
+        self.bookmark.setIcon(QIcon(r"Simple_PySide_Base-master\icons\bookmark.png"))
         self.bookmark.setMinimumHeight(35)
 
         self.go_btn = QtWidgets.QPushButton("Go")
@@ -879,11 +882,38 @@ def toggleMenu(self, maxWidth, enable):
             self.animation.setDuration(300)
             self.animation.setStartValue(width)
             self.animation.setEndValue(widthExtended)
-            self.animation.setEasingCurve(QtCore.QEasingCurve.OutQuart)
+            self.animation.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
             self.animation.start()
         else:
             print("toggle disabled")
-
+GLOBAL_STATE = 0
+GLOBAL_TITLE_BAR = True
+def maximize_restore(self, ui):
+        global GLOBAL_STATE
+        status = GLOBAL_STATE
+        if status == 0:
+            self.showMaximized()
+            GLOBAL_STATE = 1
+            ui.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+            ui.btn_maximize_restore.setToolTip("Restore")
+            ui.btn_maximize_restore.setIcon(QtGui.QIcon(u":/16x16/icons/16x16/cil-window-restore.png"))
+            ui.frame_top_btns.setStyleSheet("background-color: rgb(27, 29, 35)")
+            ui.frame_size_grip.hide()
+        else:
+            GLOBAL_STATE = 0
+            self.showNormal()
+            self.resize(self.width()+1, self.height()+1)
+            ui.horizontalLayout.setContentsMargins(10, 10, 10, 10)
+            ui.btn_maximize_restore.setToolTip("Maximize")
+            ui.btn_maximize_restore.setIcon(QtGui.QIcon(u":/16x16/icons/16x16/cil-window-maximize.png"))
+            ui.frame_top_btns.setStyleSheet("background-color: rgba(27, 29, 35, 200)")
+            ui.frame_size_grip.show()
+def dobleClickMaximizeRestore(event, self, ui): 
+            if event.type() == QtCore.QEvent.MouseButtonDblClick:
+                QtCore.QTimer.singleShot(250, lambda: maximize_restore(self, ui))
+                print("double click")
+def returStatus():
+        return GLOBAL_STATE
 
 if __name__ == "__main__":
     import sys
@@ -894,7 +924,14 @@ if __name__ == "__main__":
     ui.btn_close.clicked.connect(lambda: MainWindow.close())
     ui.btn_toggle_menu.clicked.connect(lambda: toggleMenu(ui, 220, True))
 
+    ui.btn_maximize_restore.clicked.connect(lambda: maximize_restore(MainWindow, ui))
+    ui.btn_minimize.clicked.connect(lambda: MainWindow.showMinimized())
 
+    MainWindow.sizegrip = QSizeGrip(MainWindow)
+    MainWindow.sizegrip.setStyleSheet("width: 20px; height: 20px; margin: 0px; padding: 0px;")
+    MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+    ui.frame_label_top_btns.mouseDoubleClickEvent = lambda event: dobleClickMaximizeRestore(event, MainWindow, ui)
+    
     MainWindow.show()
     sys.exit(app.exec_())
 
