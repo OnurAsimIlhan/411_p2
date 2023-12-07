@@ -717,28 +717,14 @@ class Ui_MainWindow(object):
         self.layout_menu_bottom.setContentsMargins(0, 0, 0, 25)
         self.layout_menu_bottom.setSpacing(10)
         self.layout_menu_bottom.setObjectName("layout_menu_bottom")
-        self.label_user_icon = QtWidgets.QLabel(self.frame_extra_menus)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_user_icon.sizePolicy().hasHeightForWidth())
-        self.label_user_icon.setSizePolicy(sizePolicy)
-        self.label_user_icon.setMinimumSize(QtCore.QSize(60, 60))
-        self.label_user_icon.setMaximumSize(QtCore.QSize(60, 60))
+        
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(12)
-        self.label_user_icon.setFont(font)
-        self.label_user_icon.setStyleSheet("QLabel {\n"
-"    border-radius: 30px;\n"
-"    background-color: rgb(44, 49, 60);\n"
-"    border: 5px solid rgb(39, 44, 54);\n"
-"    background-position: center;\n"
-"    background-repeat: no-repeat;\n"
-"}")
-        self.label_user_icon.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_user_icon.setObjectName("label_user_icon")
-        self.layout_menu_bottom.addWidget(self.label_user_icon, 0, QtCore.Qt.AlignHCenter)
+        
         self.verticalLayout_5.addWidget(self.frame_extra_menus, 0, QtCore.Qt.AlignBottom)
         self.horizontalLayout_2.addWidget(self.frame_left_menu)
         self.frame_content_right = QtWidgets.QFrame(self.frame_center)
@@ -865,20 +851,20 @@ class Ui_MainWindow(object):
         
         self.label_top_info_1.setText(_translate("MainWindow", "http://google.com"))
         
-        self.label_user_icon.setText(_translate("MainWindow", "WM"))
-        self.label_credits.setText(_translate("MainWindow", "Registered by: Wanderson M. Pimenta"))
         self.label_version.setText(_translate("MainWindow", "v1.0.0"))
 
-        
+
 import files_rc
 
 
 if __name__ == "__main__":
     import sys
-    
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    ui.btn_close.clicked.connect(lambda: MainWindow.close())
+
+
     MainWindow.show()
     sys.exit(app.exec_())
