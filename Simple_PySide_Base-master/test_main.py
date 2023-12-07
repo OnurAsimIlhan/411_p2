@@ -853,11 +853,31 @@ class Ui_MainWindow(object):
                 current_day = dt.day
                 
                 records = sorted(records, key=lambda x: x[current_day+1], reverse=True)
-                
+                def download_icon(url):
+                        try:
+                                response = requests.get(url)
+                                if response.status_code == 200:
+                                        pixmap = QPixmap()
+                                        pixmap.loadFromData(response.content)
+                                        return pixmap
+                        except Exception as e:
+                                print(f"Error downloading icon: {e}")
+                        return None
                 for row in records:
-                        button = QtWidgets.QPushButton(row[0])
+                        
+
+                        truncated_name = row[0][:10] + '...' if len(row[0]) > 10 else row[0]
+                        button = QtWidgets.QPushButton(truncated_name)
+                        button.setStyleSheet("font-size:13px;")
                         button.clicked.connect(lambda _, b=button: self.handle_bookmark(b))
+                        icon_pixmap = download_icon(row[9])
+                        if icon_pixmap:
+                                button.setIcon(QIcon(icon_pixmap))
+                                print("success")
+                        button.setMinimumHeight(45)
+
                         self.verticalLayout_5.insertWidget(0, button)
+
                 connection.close()
                 
         def handle_enter_key(self):
@@ -902,13 +922,14 @@ class Ui_MainWindow(object):
                 current_day = dt.strftime('%A')
 
                 connection, cursor = create_connection(FULL_PATH)
-                insert_query = f"INSERT INTO Bookmarks (name, url, {current_day}) VALUES ('{current_name}', '{current_url}', 1);"
+                insert_query = f"INSERT INTO Bookmarks (name, url, {current_day}, icon_url) VALUES ('{current_name}', '{current_url}', 1, '{icon_url}');"
                 
                 cursor.execute(insert_query)
                 connection.commit()
                 connection.close()
-                
-                button = QtWidgets.QPushButton(current_name)
+
+                truncated_name = current_name[:10] + '...' if len(current_name) > 8 else current_name
+                button = QtWidgets.QPushButton(truncated_name)
                 button.clicked.connect(lambda: self.handle_bookmark(button))
 
                 icon_pixmap = download_icon(icon_url)

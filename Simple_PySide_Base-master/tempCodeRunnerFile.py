@@ -1,1 +1,1 @@
-r"Simple_PySide_Base-master\icons\bookmark.png"
+icon_url
