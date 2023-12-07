@@ -11,6 +11,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QPropertyAnimation
+
 from PyQt5.QtWidgets import *
 
 class Ui_MainWindow(object):
@@ -852,9 +854,35 @@ class Ui_MainWindow(object):
         self.label_top_info_1.setText(_translate("MainWindow", "http://google.com"))
         
         self.label_version.setText(_translate("MainWindow", "v1.0.0"))
+    
 
+     
 
 import files_rc
+
+
+def toggleMenu(self, maxWidth, enable):
+        if enable:
+            # GET WIDTH
+            width = self.frame_left_menu.width()
+            maxExtend = maxWidth
+            standard = 70
+
+            # SET MAX WIDTH
+            if width == 70:
+                widthExtended = maxExtend
+            else:
+                widthExtended = standard
+
+            # ANIMATION
+            self.animation = QPropertyAnimation(self.frame_left_menu, b"minimumWidth")
+            self.animation.setDuration(300)
+            self.animation.setStartValue(width)
+            self.animation.setEndValue(widthExtended)
+            self.animation.setEasingCurve(QtCore.QEasingCurve.OutQuart)
+            self.animation.start()
+        else:
+            print("toggle disabled")
 
 
 if __name__ == "__main__":
@@ -864,7 +892,9 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     ui.btn_close.clicked.connect(lambda: MainWindow.close())
+    ui.btn_toggle_menu.clicked.connect(lambda: toggleMenu(ui, 220, True))
 
 
     MainWindow.show()
     sys.exit(app.exec_())
+
