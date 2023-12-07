@@ -1,1 +1,1 @@
-label_top_info_1
+r"Simple_PySide_Base-master\icons\bookmark.png"

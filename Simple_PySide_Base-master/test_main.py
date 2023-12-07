@@ -12,8 +12,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtCore import QUrl
 from PyQt5.QtCore import QPropertyAnimation
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QPoint, Qt
+import requests
 
 from PyQt5.QtWidgets import *
 from db_connection import *
@@ -427,7 +428,6 @@ class Ui_MainWindow(object):
         "}\n"
         "\n"
         "")
-                
                 self.frame_main.setFrameShape(QtWidgets.QFrame.NoFrame)
                 self.frame_main.setFrameShadow(QtWidgets.QFrame.Raised)
                 self.frame_main.setObjectName("frame_main")
@@ -634,9 +634,9 @@ class Ui_MainWindow(object):
                 self.horizontalLayout_8.setSpacing(0)
                 self.horizontalLayout_8.setObjectName("horizontalLayout_8")
 
-        self.bookmark = QtWidgets.QPushButton()
-        self.bookmark.setIcon(QIcon(r"Simple_PySide_Base-master\icons\bookmark.png"))
-        self.bookmark.setMinimumHeight(35)
+                self.bookmark = QtWidgets.QPushButton()
+                self.bookmark.setIcon(QIcon(r"Simple_PySide_Base-master\icons\bookmark.png"))
+                self.bookmark.setMinimumHeight(35)
 
                 self.go_btn = QtWidgets.QPushButton("Go")
                 self.go_btn.setMinimumHeight(35)
@@ -647,7 +647,7 @@ class Ui_MainWindow(object):
                 self.forward_btn = QtWidgets.QPushButton(">")
                 self.forward_btn.setMinimumHeight(35)
 
-                
+                        
 
                 self.label_top_info_1 = QtWidgets.QTextEdit(self.frame_top_info)
                 self.label_top_info_1.setMaximumSize(QtCore.QSize(16777215, 35))
@@ -660,117 +660,117 @@ class Ui_MainWindow(object):
                 self.label_top_info_1.setStyleSheet("color: rgb(255, 255, 255); ")
                 self.label_top_info_1.setObjectName("label_top_info_1")
                 self.horizontalLayout_8.addWidget(self.label_top_info_1)
-                
+                        
                 self.horizontalLayout_8.addWidget(self.bookmark)
                 self.horizontalLayout_8.addWidget(self.go_btn)
                 self.horizontalLayout_8.addWidget(self.back_btn)
                 self.horizontalLayout_8.addWidget(self.forward_btn)
 
+                
+                font = QtGui.QFont()
+                font.setFamily("Segoe UI")
+                font.setBold(True)
+                font.setWeight(75)
         
-        font = QtGui.QFont()
-        font.setFamily("Segoe UI")
-        font.setBold(True)
-        font.setWeight(75)
-       
-        self.verticalLayout_2.addWidget(self.frame_top_info)
-        self.horizontalLayout_3.addWidget(self.frame_top_right)
-        self.verticalLayout.addWidget(self.frame_top)
-        self.frame_center = QtWidgets.QFrame(self.frame_main)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame_center.sizePolicy().hasHeightForWidth())
-        self.frame_center.setSizePolicy(sizePolicy)
-        self.frame_center.setStyleSheet("background-color: rgb(40, 44, 52);")
-        self.frame_center.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame_center.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_center.setObjectName("frame_center")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame_center)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_2.setSpacing(0)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.frame_left_menu = QtWidgets.QFrame(self.frame_center)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame_left_menu.sizePolicy().hasHeightForWidth())
-        self.frame_left_menu.setSizePolicy(sizePolicy)
-        self.frame_left_menu.setMinimumSize(QtCore.QSize(70, 0))
-        self.frame_left_menu.setMaximumSize(QtCore.QSize(70, 16777215))
-        self.frame_left_menu.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.frame_left_menu.setStyleSheet("background-color: rgb(27, 29, 35);")
-        self.frame_left_menu.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame_left_menu.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_left_menu.setObjectName("frame_left_menu")
-        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.frame_left_menu)
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_5.setSpacing(1)
-        self.verticalLayout_5.setObjectName("verticalLayout_5")
-        self.frame_menus = QtWidgets.QFrame(self.frame_left_menu)
-        self.frame_menus.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame_menus.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_menus.setObjectName("frame_menus")
-        self.layout_menus = QtWidgets.QVBoxLayout(self.frame_menus)
-        self.layout_menus.setContentsMargins(0, 0, 0, 0)
-        self.layout_menus.setSpacing(0)
-        self.layout_menus.setObjectName("layout_menus")
-        self.verticalLayout_5.addWidget(self.frame_menus, 0, QtCore.Qt.AlignTop)
-        self.frame_extra_menus = QtWidgets.QFrame(self.frame_left_menu)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame_extra_menus.sizePolicy().hasHeightForWidth())
-        self.frame_extra_menus.setSizePolicy(sizePolicy)
-        self.frame_extra_menus.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame_extra_menus.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_extra_menus.setObjectName("frame_extra_menus")
-        self.layout_menu_bottom = QtWidgets.QVBoxLayout(self.frame_extra_menus)
-        self.layout_menu_bottom.setContentsMargins(0, 0, 0, 25)
-        self.layout_menu_bottom.setSpacing(10)
-        self.layout_menu_bottom.setObjectName("layout_menu_bottom")
-        self.label_user_icon = QtWidgets.QLabel(self.frame_extra_menus)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_user_icon.sizePolicy().hasHeightForWidth())
-        self.label_user_icon.setSizePolicy(sizePolicy)
-        self.label_user_icon.setMinimumSize(QtCore.QSize(60, 60))
-        self.label_user_icon.setMaximumSize(QtCore.QSize(60, 60))
-        font = QtGui.QFont()
-        font.setFamily("Segoe UI")
-        font.setPointSize(12)
-        self.label_user_icon.setFont(font)
-        self.label_user_icon.setStyleSheet("QLabel {\n"
-"    border-radius: 30px;\n"
-"    background-color: rgb(44, 49, 60);\n"
-"    border: 5px solid rgb(39, 44, 54);\n"
-"    background-position: center;\n"
-"    background-repeat: no-repeat;\n"
-"}")
-        self.label_user_icon.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_user_icon.setObjectName("label_user_icon")
-        self.layout_menu_bottom.addWidget(self.label_user_icon, 0, QtCore.Qt.AlignHCenter)
-        self.verticalLayout_5.addWidget(self.frame_extra_menus, 0, QtCore.Qt.AlignBottom)
-        self.horizontalLayout_2.addWidget(self.frame_left_menu)
-        self.frame_content_right = QtWidgets.QFrame(self.frame_center)
-        self.frame_content_right.setStyleSheet("background-color: rgb(44, 49, 60);")
-        self.frame_content_right.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame_content_right.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_content_right.setObjectName("frame_content_right")
-        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.frame_content_right)
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_4.setSpacing(0)
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.frame_content = QtWidgets.QFrame(self.frame_content_right)
-        self.frame_content.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame_content.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_content.setObjectName("frame_content")
-        self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.frame_content)
-        self.verticalLayout_9.setContentsMargins(5, 5, 5, 5)
-        self.verticalLayout_9.setSpacing(0)
-        self.verticalLayout_9.setObjectName("verticalLayout_9")
-        self.verticalLayout_7 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_7.setObjectName("verticalLayout_7")
+                self.verticalLayout_2.addWidget(self.frame_top_info)
+                self.horizontalLayout_3.addWidget(self.frame_top_right)
+                self.verticalLayout.addWidget(self.frame_top)
+                self.frame_center = QtWidgets.QFrame(self.frame_main)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(self.frame_center.sizePolicy().hasHeightForWidth())
+                self.frame_center.setSizePolicy(sizePolicy)
+                self.frame_center.setStyleSheet("background-color: rgb(40, 44, 52);")
+                self.frame_center.setFrameShape(QtWidgets.QFrame.NoFrame)
+                self.frame_center.setFrameShadow(QtWidgets.QFrame.Raised)
+                self.frame_center.setObjectName("frame_center")
+                self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame_center)
+                self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+                self.horizontalLayout_2.setSpacing(0)
+                self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+                self.frame_left_menu = QtWidgets.QFrame(self.frame_center)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(self.frame_left_menu.sizePolicy().hasHeightForWidth())
+                self.frame_left_menu.setSizePolicy(sizePolicy)
+                self.frame_left_menu.setMinimumSize(QtCore.QSize(70, 0))
+                self.frame_left_menu.setMaximumSize(QtCore.QSize(70, 16777215))
+                self.frame_left_menu.setLayoutDirection(QtCore.Qt.LeftToRight)
+                self.frame_left_menu.setStyleSheet("background-color: rgb(27, 29, 35);")
+                self.frame_left_menu.setFrameShape(QtWidgets.QFrame.NoFrame)
+                self.frame_left_menu.setFrameShadow(QtWidgets.QFrame.Raised)
+                self.frame_left_menu.setObjectName("frame_left_menu")
+                self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.frame_left_menu)
+                self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
+                self.verticalLayout_5.setSpacing(1)
+                self.verticalLayout_5.setObjectName("verticalLayout_5")
+                self.frame_menus = QtWidgets.QFrame(self.frame_left_menu)
+                self.frame_menus.setFrameShape(QtWidgets.QFrame.NoFrame)
+                self.frame_menus.setFrameShadow(QtWidgets.QFrame.Raised)
+                self.frame_menus.setObjectName("frame_menus")
+                self.layout_menus = QtWidgets.QVBoxLayout(self.frame_menus)
+                self.layout_menus.setContentsMargins(0, 0, 0, 0)
+                self.layout_menus.setSpacing(0)
+                self.layout_menus.setObjectName("layout_menus")
+                self.verticalLayout_5.addWidget(self.frame_menus, 0, QtCore.Qt.AlignTop)
+                self.frame_extra_menus = QtWidgets.QFrame(self.frame_left_menu)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(self.frame_extra_menus.sizePolicy().hasHeightForWidth())
+                self.frame_extra_menus.setSizePolicy(sizePolicy)
+                self.frame_extra_menus.setFrameShape(QtWidgets.QFrame.NoFrame)
+                self.frame_extra_menus.setFrameShadow(QtWidgets.QFrame.Raised)
+                self.frame_extra_menus.setObjectName("frame_extra_menus")
+                self.layout_menu_bottom = QtWidgets.QVBoxLayout(self.frame_extra_menus)
+                self.layout_menu_bottom.setContentsMargins(0, 0, 0, 25)
+                self.layout_menu_bottom.setSpacing(10)
+                self.layout_menu_bottom.setObjectName("layout_menu_bottom")
+                self.label_user_icon = QtWidgets.QLabel(self.frame_extra_menus)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(self.label_user_icon.sizePolicy().hasHeightForWidth())
+                self.label_user_icon.setSizePolicy(sizePolicy)
+                self.label_user_icon.setMinimumSize(QtCore.QSize(60, 60))
+                self.label_user_icon.setMaximumSize(QtCore.QSize(60, 60))
+                font = QtGui.QFont()
+                font.setFamily("Segoe UI")
+                font.setPointSize(12)
+                self.label_user_icon.setFont(font)
+                self.label_user_icon.setStyleSheet("QLabel {\n"
+        "    border-radius: 30px;\n"
+        "    background-color: rgb(44, 49, 60);\n"
+        "    border: 5px solid rgb(39, 44, 54);\n"
+        "    background-position: center;\n"
+        "    background-repeat: no-repeat;\n"
+        "}")
+                self.label_user_icon.setAlignment(QtCore.Qt.AlignCenter)
+                self.label_user_icon.setObjectName("label_user_icon")
+                self.layout_menu_bottom.addWidget(self.label_user_icon, 0, QtCore.Qt.AlignHCenter)
+                self.verticalLayout_5.addWidget(self.frame_extra_menus, 0, QtCore.Qt.AlignBottom)
+                self.horizontalLayout_2.addWidget(self.frame_left_menu)
+                self.frame_content_right = QtWidgets.QFrame(self.frame_center)
+                self.frame_content_right.setStyleSheet("background-color: rgb(44, 49, 60);")
+                self.frame_content_right.setFrameShape(QtWidgets.QFrame.NoFrame)
+                self.frame_content_right.setFrameShadow(QtWidgets.QFrame.Raised)
+                self.frame_content_right.setObjectName("frame_content_right")
+                self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.frame_content_right)
+                self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+                self.verticalLayout_4.setSpacing(0)
+                self.verticalLayout_4.setObjectName("verticalLayout_4")
+                self.frame_content = QtWidgets.QFrame(self.frame_content_right)
+                self.frame_content.setFrameShape(QtWidgets.QFrame.NoFrame)
+                self.frame_content.setFrameShadow(QtWidgets.QFrame.Raised)
+                self.frame_content.setObjectName("frame_content")
+                self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.frame_content)
+                self.verticalLayout_9.setContentsMargins(5, 5, 5, 5)
+                self.verticalLayout_9.setSpacing(0)
+                self.verticalLayout_9.setObjectName("verticalLayout_9")
+                self.verticalLayout_7 = QtWidgets.QVBoxLayout()
+                self.verticalLayout_7.setObjectName("verticalLayout_7")
 
                 self.browser = QWebEngineView()
                 self.verticalLayout_7.addWidget(self.browser)
@@ -881,11 +881,23 @@ class Ui_MainWindow(object):
                 self.label_top_info_1.setText(current_url)
                 self.label_top_info_1.setText(current_url)
 
-                
+        
         def bookmark_add_new(self):
+                def download_icon(url):
+                        try:
+                                response = requests.get(url)
+                                if response.status_code == 200:
+                                        pixmap = QPixmap()
+                                        pixmap.loadFromData(response.content)
+                                        return pixmap
+                        except Exception as e:
+                                print(f"Error downloading icon: {e}")
+                        return None
+                
                 current_url = self.browser.url().toString()
                 current_name = self.browser.title()
-                
+                icon_url = self.browser.iconUrl().url()
+                print(icon_url)
                 dt = datetime.now()
                 current_day = dt.strftime('%A')
 
@@ -898,8 +910,18 @@ class Ui_MainWindow(object):
                 
                 button = QtWidgets.QPushButton(current_name)
                 button.clicked.connect(lambda: self.handle_bookmark(button))
-                self.verticalLayout_5.insertWidget(0, button) # add a button to the top of the layout
+
+                icon_pixmap = download_icon(icon_url)
+                if icon_pixmap:
+                        button.setIcon(QIcon(icon_pixmap))     
+                        print("success")
+
+
+                # Set a horizontal layout for the button with icon to the left of text
+                
+                self.verticalLayout_5.insertWidget(0, button)  # add a button to the top of the layout
                 self.newIcon = QtWidgets.QLabel(self.frame_left_menu)
+
                 
         def handle_bookmark(self, button:QtWidgets.QPushButton):
                 bookmark_name = button.text()
@@ -918,17 +940,17 @@ class Ui_MainWindow(object):
                 self.navigate(url)
 
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_title_bar_top.setText(_translate("MainWindow", "Main Window - Base"))
-        self.btn_minimize.setToolTip(_translate("MainWindow", "Minimize"))
-        self.btn_maximize_restore.setToolTip(_translate("MainWindow", "Maximize"))
-        self.btn_close.setToolTip(_translate("MainWindow", "Close"))
-        
-        self.label_top_info_1.setText(_translate("MainWindow", "http://google.com"))
-        
-        self.label_version.setText(_translate("MainWindow", "v1.0.0"))
+        def retranslateUi(self, MainWindow):
+                _translate = QtCore.QCoreApplication.translate
+                MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+                self.label_title_bar_top.setText(_translate("MainWindow", "Main Window - Base"))
+                self.btn_minimize.setToolTip(_translate("MainWindow", "Minimize"))
+                self.btn_maximize_restore.setToolTip(_translate("MainWindow", "Maximize"))
+                self.btn_close.setToolTip(_translate("MainWindow", "Close"))
+                
+                self.label_top_info_1.setText(_translate("MainWindow", "http://google.com"))
+                
+                self.label_version.setText(_translate("MainWindow", "v1.0.0"))
     
 
      
