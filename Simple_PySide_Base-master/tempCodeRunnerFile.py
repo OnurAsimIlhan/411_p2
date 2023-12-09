@@ -1,1 +1,2 @@
-icon_url
+
+                horizontal_layout15 = QtWidgets.QHBoxLayout()

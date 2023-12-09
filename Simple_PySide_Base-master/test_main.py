@@ -715,42 +715,19 @@ class Ui_MainWindow(object):
                 self.layout_menus.setSpacing(0)
                 self.layout_menus.setObjectName("layout_menus")
                 self.verticalLayout_5.addWidget(self.frame_menus, 0, QtCore.Qt.AlignTop)
-                self.frame_extra_menus = QtWidgets.QFrame(self.frame_left_menu)
                 sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
                 sizePolicy.setHorizontalStretch(0)
                 sizePolicy.setVerticalStretch(0)
-                sizePolicy.setHeightForWidth(self.frame_extra_menus.sizePolicy().hasHeightForWidth())
-                self.frame_extra_menus.setSizePolicy(sizePolicy)
-                self.frame_extra_menus.setFrameShape(QtWidgets.QFrame.NoFrame)
-                self.frame_extra_menus.setFrameShadow(QtWidgets.QFrame.Raised)
-                self.frame_extra_menus.setObjectName("frame_extra_menus")
-                self.layout_menu_bottom = QtWidgets.QVBoxLayout(self.frame_extra_menus)
-                self.layout_menu_bottom.setContentsMargins(0, 0, 0, 25)
-                self.layout_menu_bottom.setSpacing(10)
-                self.layout_menu_bottom.setObjectName("layout_menu_bottom")
-                self.label_user_icon = QtWidgets.QLabel(self.frame_extra_menus)
+                
+                
                 sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
                 sizePolicy.setHorizontalStretch(0)
                 sizePolicy.setVerticalStretch(0)
-                sizePolicy.setHeightForWidth(self.label_user_icon.sizePolicy().hasHeightForWidth())
-                self.label_user_icon.setSizePolicy(sizePolicy)
-                self.label_user_icon.setMinimumSize(QtCore.QSize(60, 60))
-                self.label_user_icon.setMaximumSize(QtCore.QSize(60, 60))
+                
                 font = QtGui.QFont()
                 font.setFamily("Segoe UI")
                 font.setPointSize(12)
-                self.label_user_icon.setFont(font)
-                self.label_user_icon.setStyleSheet("QLabel {\n"
-        "    border-radius: 30px;\n"
-        "    background-color: rgb(44, 49, 60);\n"
-        "    border: 5px solid rgb(39, 44, 54);\n"
-        "    background-position: center;\n"
-        "    background-repeat: no-repeat;\n"
-        "}")
-                self.label_user_icon.setAlignment(QtCore.Qt.AlignCenter)
-                self.label_user_icon.setObjectName("label_user_icon")
-                self.layout_menu_bottom.addWidget(self.label_user_icon, 0, QtCore.Qt.AlignHCenter)
-                self.verticalLayout_5.addWidget(self.frame_extra_menus, 0, QtCore.Qt.AlignBottom)
+               
                 self.horizontalLayout_2.addWidget(self.frame_left_menu)
                 self.frame_content_right = QtWidgets.QFrame(self.frame_center)
                 self.frame_content_right.setStyleSheet("background-color: rgb(44, 49, 60);")
@@ -841,7 +818,11 @@ class Ui_MainWindow(object):
                 MainWindow.setTabOrder(self.btn_minimize, self.btn_maximize_restore)
                 MainWindow.setTabOrder(self.btn_maximize_restore, self.btn_close)
                 MainWindow.setTabOrder(self.btn_close, self.btn_toggle_menu)
+
                 
+
+                
+
                 # Get bookmarks from database
                 connection, cursor = create_connection(FULL_PATH)
                 select_query = "SELECT * FROM Bookmarks"
@@ -850,9 +831,11 @@ class Ui_MainWindow(object):
                 records = cursor.fetchall()
                 
                 dt = datetime.now()
-                current_day = dt.day
-                
-                records = sorted(records, key=lambda x: x[current_day+1], reverse=True)
+                current_day_of_week = dt.weekday()
+                print(current_day_of_week)
+
+
+                records = sorted(records, key=lambda x: x[current_day_of_week+2], reverse=False)
                 def download_icon(url):
                         try:
                                 response = requests.get(url)
@@ -863,22 +846,53 @@ class Ui_MainWindow(object):
                         except Exception as e:
                                 print(f"Error downloading icon: {e}")
                         return None
-                for row in records:
-                        
+                def populate_bookmark(records):
+                        for row in records:
+                                truncated_name = row[0]
 
-                        truncated_name = row[0][:10] + '...' if len(row[0]) > 10 else row[0]
-                        button = QtWidgets.QPushButton(truncated_name)
-                        button.setStyleSheet("font-size:13px;")
-                        button.clicked.connect(lambda _, b=button: self.handle_bookmark(b))
-                        icon_pixmap = download_icon(row[9])
-                        if icon_pixmap:
-                                button.setIcon(QIcon(icon_pixmap))
-                                print("success")
-                        button.setMinimumHeight(45)
+                                # Main button
+                                button = QtWidgets.QPushButton(truncated_name)
+                                button.setStyleSheet("font-size:13px;")
+                                button.clicked.connect(lambda _, b=button: self.handle_bookmark(b))
+                                icon_pixmap = download_icon(row[9])
+                                if icon_pixmap:
+                                        button.setIcon(QIcon(icon_pixmap))
+                                        print("success")
+                                button.setMinimumHeight(45)
+                                button.setStyleSheet("font-size:16px;")
 
-                        self.verticalLayout_5.insertWidget(0, button)
+                                # X button
+                                x_button = QtWidgets.QPushButton('X')
+                                
+                                x_button.clicked.connect(lambda _, b=button: self.remove_bookmark(b))
+                                x_button.setStyleSheet("font-size:16px; color: red;")
+                                x_button.setMinimumHeight(45)
+                                x_button.setMinimumWidth(45)
 
+                                x_button.setMaximumHeight(45)
+                                x_button.setMaximumWidth(45)
+                                # Create a horizontal layout
+                                horizontal_layout15 = QtWidgets.QHBoxLayout()
+
+                                # Add both buttons to the horizontal layout
+                                horizontal_layout15.addWidget(button)
+                                horizontal_layout15.addWidget(x_button)
+
+                                # Add the horizontal layout to the vertical layout
+                                self.verticalLayout_5.insertLayout(0,horizontal_layout15)
+
+                populate_bookmark(records)
+                
+                label = QtWidgets.QPushButton("My Bookmarks")
+                label.setStyleSheet("font-size: 20px; text-align: left; font-weight: bold;")
+                label.setDisabled(True)  # Make the button not clickable
+                label.setMinimumHeight(45)
+                horizontal_layout15 = QtWidgets.QHBoxLayout()
+                horizontal_layout15.addWidget(label)
+                horizontal_layout15.setContentsMargins(0, 2, 0, 10)
+                self.verticalLayout_5.insertLayout(0,horizontal_layout15)
                 connection.close()
+                
                 
         def handle_enter_key(self):
                 # Get the text from label_top_info_1
@@ -900,9 +914,23 @@ class Ui_MainWindow(object):
                         current_url = "http://" + current_url
                 self.label_top_info_1.setText(current_url)
                 self.label_top_info_1.setText(current_url)
-
         
+        global FIRST_TIME
+        FIRST_TIME = True
         def bookmark_add_new(self):
+                global FIRST_TIME
+                if(FIRST_TIME):
+                        label = QtWidgets.QPushButton("Recently Added")
+                        label.setStyleSheet("font-size: 20px; text-align: left; font-weight: bold;")
+                        label.setDisabled(True)  # Make the button not clickable
+                        label.setMinimumHeight(60)
+                        horizontal_layout15 = QtWidgets.QHBoxLayout()
+                        horizontal_layout15.addWidget(label)
+                        horizontal_layout15.setContentsMargins(0, 2, 0, 10)
+                        FIRST_TIME=False
+                        self.verticalLayout_5.insertLayout(0,horizontal_layout15)
+
+                
                 def download_icon(url):
                         try:
                                 response = requests.get(url)
@@ -922,13 +950,20 @@ class Ui_MainWindow(object):
                 current_day = dt.strftime('%A')
 
                 connection, cursor = create_connection(FULL_PATH)
+                check_query = f"SELECT COUNT(*) FROM Bookmarks WHERE url = '{current_url}';"
+                cursor.execute(check_query)
+                result = cursor.fetchone()
+                if result and result[0] > 0:
+                        print("Bookmark already exists.")
+                        return
+
                 insert_query = f"INSERT INTO Bookmarks (name, url, {current_day}, icon_url) VALUES ('{current_name}', '{current_url}', 1, '{icon_url}');"
                 
                 cursor.execute(insert_query)
                 connection.commit()
                 connection.close()
 
-                truncated_name = current_name[:10] + '...' if len(current_name) > 8 else current_name
+                truncated_name = current_name
                 button = QtWidgets.QPushButton(truncated_name)
                 button.clicked.connect(lambda: self.handle_bookmark(button))
 
@@ -936,18 +971,41 @@ class Ui_MainWindow(object):
                 if icon_pixmap:
                         button.setIcon(QIcon(icon_pixmap))     
                         print("success")
-
-
+                
                 # Set a horizontal layout for the button with icon to the left of text
-                
-                self.verticalLayout_5.insertWidget(0, button)  # add a button to the top of the layout
-                self.newIcon = QtWidgets.QLabel(self.frame_left_menu)
+                button.setMinimumHeight(45)
+                button.setStyleSheet("font-size:16px;")
+                # X button
+                x_button = QtWidgets.QPushButton('X')
+                x_button.clicked.connect(lambda _, b=button: self.remove_bookmark(b))
+                x_button.setStyleSheet("font-size:16px; color: red;")
+                x_button.setMinimumHeight(45)
+                x_button.setMinimumWidth(45)
 
-                
+                x_button.setMaximumHeight(45)
+                x_button.setMaximumWidth(45)
+                horizontal_layout15 = QtWidgets.QHBoxLayout()
+
+                # Add both buttons to the horizontal layout
+                horizontal_layout15.addWidget(button)
+                horizontal_layout15.addWidget(x_button)
+
+                # Add the horizontal layout to the vertical layout
+                self.verticalLayout_5.insertLayout(1,horizontal_layout15)
+                # Add the horizontal layout to the vertical layout
+                self.newIcon = QtWidgets.QLabel(self.frame_left_menu)
+                       
+        
         def handle_bookmark(self, button:QtWidgets.QPushButton):
                 bookmark_name = button.text()
                 print(bookmark_name)
                 connection, cursor = create_connection(FULL_PATH)
+
+                current_day = datetime.now().strftime('%A')
+                update_query = f"UPDATE Bookmarks SET {current_day} = {current_day} + 1 WHERE name = '{bookmark_name}';"
+                cursor.execute(update_query)
+                connection.commit()
+
                 select_query = f"SELECT * FROM Bookmarks WHERE name='{bookmark_name}'"
                 cursor.execute(select_query)
                 connection.commit()
@@ -960,7 +1018,36 @@ class Ui_MainWindow(object):
                 print(url)
                 self.navigate(url)
 
+           
 
+        def remove_bookmark(self, button: QtWidgets.QPushButton):
+                bookmark_name = button.text()
+                connection, cursor = create_connection(FULL_PATH)
+                try:
+                        delete_query = f"DELETE FROM Bookmarks WHERE name='{bookmark_name}'"
+                        result = cursor.execute(delete_query)
+                        connection.commit()
+                        print(result)
+                        print(f"Bookmark '{bookmark_name}' removed successfully.")
+                        for i in range(self.verticalLayout_5.count()):
+                                item = self.verticalLayout_5.itemAt(i)
+                                if isinstance(item, QtWidgets.QHBoxLayout):
+                                        layout = item
+                                        for j in range(layout.count()):
+                                                if layout.itemAt(j).widget() == button:
+                                                        layout.itemAt(j).widget().deleteLater()
+                                                        layout.itemAt(j+1).widget().deleteLater()
+                                                        layout.removeItem(layout.itemAt(j))
+                                                        layout.removeItem(layout.itemAt(j))
+                                                        layout.deleteLater()
+                                                        self.verticalLayout_5.update()
+                                                        return
+                except Exception as e:
+                        print(f"Error removing bookmark '{bookmark_name}': {e}")
+                finally:
+                        connection.close()
+        
+        
         def retranslateUi(self, MainWindow):
                 _translate = QtCore.QCoreApplication.translate
                 MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -1037,7 +1124,7 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     ui.btn_close.clicked.connect(lambda: MainWindow.close())
-    ui.btn_toggle_menu.clicked.connect(lambda: toggleMenu(ui, 220, True))
+    ui.btn_toggle_menu.clicked.connect(lambda: toggleMenu(ui, 500, True))
 
     ui.btn_maximize_restore.clicked.connect(lambda: maximize_restore(MainWindow, ui))
     ui.btn_minimize.clicked.connect(lambda: MainWindow.showMinimized())
