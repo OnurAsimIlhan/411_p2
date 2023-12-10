@@ -852,6 +852,8 @@ class Ui_MainWindow(object):
 
                                 # Main button
                                 button = QtWidgets.QPushButton(truncated_name)
+                                button.setProperty("bookmarkTitle", truncated_name)
+                                
                                 button.setStyleSheet("font-size:13px;")
                                 button.clicked.connect(lambda _, b=button: self.handle_bookmark(b))
                                 icon_pixmap = download_icon(row[9])
@@ -863,7 +865,8 @@ class Ui_MainWindow(object):
 
                                 # X button
                                 x_button = QtWidgets.QPushButton('X')
-                                
+                                x_button.setVisible(False)
+
                                 x_button.clicked.connect(lambda _, b=button: self.remove_bookmark(b))
                                 x_button.setStyleSheet("font-size:16px; color: red;")
                                 x_button.setMinimumHeight(45)
@@ -871,21 +874,33 @@ class Ui_MainWindow(object):
 
                                 x_button.setMaximumHeight(45)
                                 x_button.setMaximumWidth(45)
+
                                 # Create a horizontal layout
                                 horizontal_layout15 = QtWidgets.QHBoxLayout()
-
                                 # Add both buttons to the horizontal layout
                                 horizontal_layout15.addWidget(button)
                                 horizontal_layout15.addWidget(x_button)
-
+                                button.setProperty("originalText", truncated_name)
                                 # Add the horizontal layout to the vertical layout
+
+                                width = self.frame_left_menu.width()
+                                if(width == 70):
+                                        x_button.setVisible(False)
+                                        button.setText('')
+                                
+                                else:
+                                        button.setText(button.property("originalText"))
+
                                 self.verticalLayout_5.insertLayout(0,horizontal_layout15)
 
                 populate_bookmark(records)
                 
                 label = QtWidgets.QPushButton("My Bookmarks")
                 label.setStyleSheet("font-size: 20px; text-align: left; font-weight: bold;")
-                label.setDisabled(True)  # Make the button not clickable
+                width = self.frame_left_menu.width()
+                if(width == 70):
+                       label.setVisible(False)  # Make the button not clickable
+                
                 label.setMinimumHeight(45)
                 horizontal_layout15 = QtWidgets.QHBoxLayout()
                 horizontal_layout15.addWidget(label)
@@ -917,10 +932,18 @@ class Ui_MainWindow(object):
         
         global FIRST_TIME
         FIRST_TIME = True
+        global COUNTER
+        COUNTER = 0
+
+        START_TIME = True
         def bookmark_add_new(self):
                 global FIRST_TIME
+                global COUNTER
                 if(FIRST_TIME):
                         label = QtWidgets.QPushButton("Recently Added")
+                        width = self.frame_left_menu.width()
+                        if(width == 70):
+                                label.setVisible(False)  # Make the button not clickable
                         label.setStyleSheet("font-size: 20px; text-align: left; font-weight: bold;")
                         label.setDisabled(True)  # Make the button not clickable
                         label.setMinimumHeight(60)
@@ -958,13 +981,15 @@ class Ui_MainWindow(object):
                         return
 
                 insert_query = f"INSERT INTO Bookmarks (name, url, {current_day}, icon_url) VALUES ('{current_name}', '{current_url}', 1, '{icon_url}');"
-                
+                COUNTER = COUNTER + 1
                 cursor.execute(insert_query)
                 connection.commit()
                 connection.close()
 
                 truncated_name = current_name
                 button = QtWidgets.QPushButton(truncated_name)
+                button.setProperty("bookmarkTitle", truncated_name)
+                button.setStyleSheet("font-size:13px;")
                 button.clicked.connect(lambda: self.handle_bookmark(button))
 
                 icon_pixmap = download_icon(icon_url)
@@ -977,6 +1002,7 @@ class Ui_MainWindow(object):
                 button.setStyleSheet("font-size:16px;")
                 # X button
                 x_button = QtWidgets.QPushButton('X')
+                
                 x_button.clicked.connect(lambda _, b=button: self.remove_bookmark(b))
                 x_button.setStyleSheet("font-size:16px; color: red;")
                 x_button.setMinimumHeight(45)
@@ -989,38 +1015,53 @@ class Ui_MainWindow(object):
                 # Add both buttons to the horizontal layout
                 horizontal_layout15.addWidget(button)
                 horizontal_layout15.addWidget(x_button)
+                button.setProperty("originalText", truncated_name)
 
+                width = self.frame_left_menu.width()
+                if(width == 70):
+                       x_button.setVisible(False)
+                       button.setText('')
+                       
+                else:
+                       button.setText(button.property("originalText"))
                 # Add the horizontal layout to the vertical layout
                 self.verticalLayout_5.insertLayout(1,horizontal_layout15)
                 # Add the horizontal layout to the vertical layout
                 self.newIcon = QtWidgets.QLabel(self.frame_left_menu)
                        
         
-        def handle_bookmark(self, button:QtWidgets.QPushButton):
-                bookmark_name = button.text()
-                print(bookmark_name)
-                connection, cursor = create_connection(FULL_PATH)
+        def handle_bookmark(self, button: QtWidgets.QPushButton):
+                main_button = button.property("bookmarkTitle")
+                print(main_button)
+                if main_button:
+                        bookmark_name = main_button
+                        print(bookmark_name)
+                        connection, cursor = create_connection(FULL_PATH)
 
-                current_day = datetime.now().strftime('%A')
-                update_query = f"UPDATE Bookmarks SET {current_day} = {current_day} + 1 WHERE name = '{bookmark_name}';"
-                cursor.execute(update_query)
-                connection.commit()
+                        current_day = datetime.now().strftime('%A')
+                        update_query = f"UPDATE Bookmarks SET {current_day} = {current_day} + 1 WHERE name = '{bookmark_name}';"
+                        cursor.execute(update_query)
+                        connection.commit()
 
-                select_query = f"SELECT * FROM Bookmarks WHERE name='{bookmark_name}'"
-                cursor.execute(select_query)
-                connection.commit()
-                records = cursor.fetchall()
-                connection.close()
-                
-                print(records)
-                
-                url = records[0][1]
-                print(url)
-                self.navigate(url)
+                        select_query = f"SELECT * FROM Bookmarks WHERE name='{bookmark_name}'"
+                        cursor.execute(select_query)
+                        connection.commit()
+                        records = cursor.fetchall()
+                        connection.close()
+
+                        print(records)
+
+                        url = records[0][1]
+                        print(url)
+                        self.navigate(url)
+                else:
+                        print("Error: mainButton property not found")
 
            
 
         def remove_bookmark(self, button: QtWidgets.QPushButton):
+                global COUNTER
+                global FIRST_TIME
                 bookmark_name = button.text()
                 connection, cursor = create_connection(FULL_PATH)
                 try:
@@ -1029,6 +1070,7 @@ class Ui_MainWindow(object):
                         connection.commit()
                         print(result)
                         print(f"Bookmark '{bookmark_name}' removed successfully.")
+                        COUNTER = COUNTER - 1
                         for i in range(self.verticalLayout_5.count()):
                                 item = self.verticalLayout_5.itemAt(i)
                                 if isinstance(item, QtWidgets.QHBoxLayout):
@@ -1041,6 +1083,8 @@ class Ui_MainWindow(object):
                                                         layout.removeItem(layout.itemAt(j))
                                                         layout.deleteLater()
                                                         self.verticalLayout_5.update()
+                                                        # Remove "Recently added" label if no new additions
+                                                        
                                                         return
                 except Exception as e:
                         print(f"Error removing bookmark '{bookmark_name}': {e}")
@@ -1051,7 +1095,7 @@ class Ui_MainWindow(object):
         def retranslateUi(self, MainWindow):
                 _translate = QtCore.QCoreApplication.translate
                 MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-                self.label_title_bar_top.setText(_translate("MainWindow", "Main Window - Base"))
+                self.label_title_bar_top.setText(_translate("MainWindow", "Main Window"))
                 self.btn_minimize.setToolTip(_translate("MainWindow", "Minimize"))
                 self.btn_maximize_restore.setToolTip(_translate("MainWindow", "Maximize"))
                 self.btn_close.setToolTip(_translate("MainWindow", "Close"))
@@ -1067,6 +1111,7 @@ import files_rc
 
 
 def toggleMenu(self, maxWidth, enable):
+        global FIRST_TIME
         if enable:
             # GET WIDTH
             width = self.frame_left_menu.width()
@@ -1086,8 +1131,30 @@ def toggleMenu(self, maxWidth, enable):
             self.animation.setEndValue(widthExtended)
             self.animation.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
             self.animation.start()
+            
+
+            all_buttons = self.frame_left_menu.findChildren(QPushButton)
+            for button in all_buttons:
+                if button.text() == 'X':
+                       button.setVisible(width == 70)
+                elif button.text() == 'Recently Added':
+                        button.setVisible(width == 70 and FIRST_TIME == False )
+
+                elif button.text() == 'My Bookmarks':
+                        button.setVisible(width == 70)
+                else:
+                        if width == 70:
+                                button.setText(button.property("originalText"))
+                        else:
+                                # Show the original text
+                                # Hide the text
+                                button.setText('')
+                                
+                                
         else:
             print("toggle disabled")
+            for button in self.frame_left_menu.findChildren(QPushButton):
+                button.setStyleSheet("background-color: #2D2F31; color: white;")
 GLOBAL_STATE = 0
 GLOBAL_TITLE_BAR = True
 def maximize_restore(self, ui):
@@ -1125,7 +1192,6 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     ui.btn_close.clicked.connect(lambda: MainWindow.close())
     ui.btn_toggle_menu.clicked.connect(lambda: toggleMenu(ui, 500, True))
-
     ui.btn_maximize_restore.clicked.connect(lambda: maximize_restore(MainWindow, ui))
     ui.btn_minimize.clicked.connect(lambda: MainWindow.showMinimized())
 

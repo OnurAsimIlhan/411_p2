@@ -1,2 +1,2 @@
 
-                horizontal_layout15 = QtWidgets.QHBoxLayout()
+                                # Show the original text
