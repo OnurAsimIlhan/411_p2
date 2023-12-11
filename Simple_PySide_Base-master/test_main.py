@@ -1032,7 +1032,8 @@ class Ui_MainWindow(object):
                         print("Bookmark already exists.")
                         return
 
-                insert_query = f"INSERT INTO Bookmarks (name, url, {current_day}, icon_url) VALUES ('{current_name}', '{current_url}', 1, '{icon_url}');"
+                insert_query = f"INSERT INTO Bookmarks (name, url, {current_day}, icon_url) 
+                VALUES ('{current_name}', '{current_url}', 1, '{icon_url}');"
                 COUNTER = COUNTER + 1
                 cursor.execute(insert_query)
                 connection.commit()
