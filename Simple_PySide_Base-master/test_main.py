@@ -25,7 +25,8 @@ FULL_PATH = "C:\\Users\\onura\\Documents\\491\\411_p2\\Simple_PySide_Base-master
 # connection, cursor = create_connection(FULL_PATH)
 
 class Ui_MainWindow(object):
-    
+        
+
         def setupUi(self, MainWindow):
                 MainWindow.setObjectName("MainWindow")
                 MainWindow.resize(1000, 720)
@@ -811,7 +812,11 @@ class Ui_MainWindow(object):
                 self.horizontalLayout_2.addWidget(self.frame_content_right)
                 self.verticalLayout.addWidget(self.frame_center)
                 self.horizontalLayout.addWidget(self.frame_main)
+
+
                 MainWindow.setCentralWidget(self.centralwidget)
+
+
 
                 self.retranslateUi(MainWindow)
                 QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -820,7 +825,6 @@ class Ui_MainWindow(object):
                 MainWindow.setTabOrder(self.btn_close, self.btn_toggle_menu)
 
                 
-
                 
 
                 # Get bookmarks from database
@@ -845,30 +849,31 @@ class Ui_MainWindow(object):
                                         return pixmap
                         except Exception as e:
                                 print(f"Error downloading icon: {e}")
-                        return None
+                        return QIcon(r"Simple_PySide_Base-master\icons\bookmark.png")
                 def populate_bookmark(records):
                         for row in records:
                                 truncated_name = row[0]
 
                                 # Main button
                                 button = QtWidgets.QPushButton(truncated_name)
+                                
                                 button.setProperty("bookmarkTitle", truncated_name)
                                 
-                                button.setStyleSheet("font-size:13px;")
                                 button.clicked.connect(lambda _, b=button: self.handle_bookmark(b))
                                 icon_pixmap = download_icon(row[9])
                                 if icon_pixmap:
                                         button.setIcon(QIcon(icon_pixmap))
                                         print("success")
                                 button.setMinimumHeight(45)
-                                button.setStyleSheet("font-size:16px;")
+                                button.setMinimumWidth(45)
+                                button.setStyleSheet("font-size:16px; background-color: #323336;")
 
                                 # X button
                                 x_button = QtWidgets.QPushButton('X')
                                 x_button.setVisible(False)
 
                                 x_button.clicked.connect(lambda _, b=button: self.remove_bookmark(b))
-                                x_button.setStyleSheet("font-size:16px; color: red;")
+                                x_button.setStyleSheet("font-size:16px; color: red;background-color: #323336")
                                 x_button.setMinimumHeight(45)
                                 x_button.setMinimumWidth(45)
 
@@ -895,7 +900,7 @@ class Ui_MainWindow(object):
 
                 populate_bookmark(records)
                 
-                label = QtWidgets.QPushButton("My Bookmarks")
+                label = QtWidgets.QPushButton("  My Bookmarks")
                 label.setStyleSheet("font-size: 20px; text-align: left; font-weight: bold;")
                 width = self.frame_left_menu.width()
                 if(width == 70):
@@ -906,6 +911,26 @@ class Ui_MainWindow(object):
                 horizontal_layout15.addWidget(label)
                 horizontal_layout15.setContentsMargins(0, 2, 0, 10)
                 self.verticalLayout_5.insertLayout(0,horizontal_layout15)
+
+
+                label = QtWidgets.QPushButton("CBA Browser")
+
+                
+                label.setIcon(QIcon(r"Simple_PySide_Base-master\icons\bookmark.png"))
+                label.setIconSize(label.sizeHint())
+                label.setProperty("originalText", "CBA Browser")
+                label.setStyleSheet("font-size: 15px;  font-weight: bold;")
+                width = self.frame_left_menu.width()
+                if(width == 70):
+                       label.setText('')
+                       
+                else:
+                       label.setText(label.property("originalText"))
+                label.setMinimumHeight(80)
+                horizontal_layout15 = QtWidgets.QHBoxLayout()
+                horizontal_layout15.addWidget(label)
+                horizontal_layout15.setContentsMargins(0, 2, 0, 10)
+                self.verticalLayout_5.insertLayout(-1,horizontal_layout15)
                 connection.close()
                 
                 
@@ -965,7 +990,7 @@ class Ui_MainWindow(object):
                 global FIRST_TIME
                 global COUNTER
                 if(FIRST_TIME):
-                        label = QtWidgets.QPushButton("Recently Added")
+                        label = QtWidgets.QPushButton("  Recently Added")
                         width = self.frame_left_menu.width()
                         if(width == 70):
                                 label.setVisible(False)  # Make the button not clickable
@@ -980,6 +1005,7 @@ class Ui_MainWindow(object):
 
                 
                 def download_icon(url):
+                        
                         try:
                                 response = requests.get(url)
                                 if response.status_code == 200:
@@ -988,7 +1014,8 @@ class Ui_MainWindow(object):
                                         return pixmap
                         except Exception as e:
                                 print(f"Error downloading icon: {e}")
-                        return None
+                        return QIcon(r"Simple_PySide_Base-master\icons\bookmark.png")
+
                 
                 current_url = self.browser.url().toString()
                 current_name = self.browser.title()
@@ -1024,12 +1051,12 @@ class Ui_MainWindow(object):
                 
                 # Set a horizontal layout for the button with icon to the left of text
                 button.setMinimumHeight(45)
-                button.setStyleSheet("font-size:16px;")
+                button.setStyleSheet("font-size:16px; background-color:#323336")
                 # X button
                 x_button = QtWidgets.QPushButton('X')
                 
                 x_button.clicked.connect(lambda _, b=button: self.remove_bookmark(b))
-                x_button.setStyleSheet("font-size:16px; color: red;")
+                x_button.setStyleSheet("font-size:16px; color: red;background-color: #323336;")
                 x_button.setMinimumHeight(45)
                 x_button.setMinimumWidth(45)
 
@@ -1162,11 +1189,12 @@ def toggleMenu(self, maxWidth, enable):
             for button in all_buttons:
                 if button.text() == 'X':
                        button.setVisible(width == 70)
-                elif button.text() == 'Recently Added':
+                elif button.text() == '  Recently Added':
                         button.setVisible(width == 70 and FIRST_TIME == False )
 
-                elif button.text() == 'My Bookmarks':
+                elif button.text() == '  My Bookmarks':
                         button.setVisible(width == 70)
+                
                 else:
                         if width == 70:
                                 button.setText(button.property("originalText"))
