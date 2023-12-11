@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import *
 from db_connection import *
 from datetime import datetime
 
-FULL_PATH = "C:\\Users\\onura\\Documents\\491\\411_p2\\Simple_PySide_Base-master\\storage\\bookmarking.db"
+FULL_PATH = "Simple_PySide_Base-master/storage/bookmarking.db"
 
 # connection, cursor = create_connection(FULL_PATH)
 
