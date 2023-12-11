@@ -917,6 +917,31 @@ class Ui_MainWindow(object):
                 self.navigate(url)
 
         def navigate(self, url):
+                if url.startswith("~g"):
+                        words = url.split()
+                        # Check if there is at least one more word after "~g"
+                        if len(words) > 1:
+                        # Extract the second word (index 1)
+                                command = words[1]
+                                url = "http://www.google.com/search?q=" + command
+                                self.label_top_info_1.setText(url)
+                                self.browser.setUrl(QUrl(url))
+                        else:
+                                print("Command missing after ~g")
+                        return
+                if url.startswith("~y"):
+                        words = url.split()
+                        # Check if there is at least one more word after "~g"
+                        if len(words) > 1:
+                        # Extract the second word (index 1)
+                                command = words[1]
+                                url = "http://www.youtube.com/results?search_query=" + command
+                                self.label_top_info_1.setText(url)
+                                self.browser.setUrl(QUrl(url))
+                        else:
+                                print("Command missing after ~y")
+                        return
+                       
                 if not url.startswith("http"):
                         url = "http://" + url
                 self.label_top_info_1.setText(url)
